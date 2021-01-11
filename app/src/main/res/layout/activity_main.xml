@@ -43,14 +43,14 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/tab_background_active"
                 android:icon="@drawable/main_tab_icon"
-                android:text="@string/main" />
+                android:text="@string/main_tab" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="auto"
                 android:icon="@drawable/fav_tab_icon"
-                android:text="@string/favourite" />
+                android:text="@string/favourite_tab" />
         </com.google.android.material.tabs.TabLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

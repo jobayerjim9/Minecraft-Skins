@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 binding.viewPager.setCurrentItem(binding.homeTabLayout.getSelectedTabPosition());
-                if (tab.getText().toString().trim().equals("Main")) {
+                if (tab.getText().toString().trim().equals(getString(R.string.main_tab))) {
 //                    binding.setTabState(1);
                     ViewGroup tabStrip = (ViewGroup) binding.homeTabLayout.getChildAt(0);
                     for (int i = 0; i < tabStrip.getChildCount(); i++) {
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        HomeViewPagerAdapter adapter=new HomeViewPagerAdapter(getSupportFragmentManager());
+        HomeViewPagerAdapter adapter = new HomeViewPagerAdapter(getSupportFragmentManager(), this);
         binding.viewPager.setAdapter(adapter);
 //        try {
 //            // get input stream

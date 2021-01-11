@@ -94,13 +94,13 @@ public class DetailsActivity extends AppCompatActivity {
         rootFolder=new File(Environment.getExternalStorageDirectory(),Constants.MAIN_FOLDER);
         try {
             // get input stream
-            fileName=getIntent().getStringExtra("image");
-            imageName=getIntent().getStringExtra("name");
-            resName=getIntent().getStringExtra("res");
-            mainName=imageName.replace(".png","");
-            resMainName=resName.replace(".png","");
-            resFileName="res_skins/"+resName;
-            Log.d("resPath",resFileName+" "+fileName);
+            fileName = getIntent().getStringExtra(Constants.IMAGE_FIELD);
+            imageName = getIntent().getStringExtra(Constants.NAME_FIELD);
+            resName = getIntent().getStringExtra(Constants.RES_FIELD);
+            mainName = imageName.replace(".png", "");
+            resMainName = resName.replace(".png", "");
+            resFileName = "res_skins/" + resName;
+            Log.d("resPath", resFileName + " " + fileName);
             ims = getAssets().open(fileName);
             // load image as Drawable
             imageDrawable = Drawable.createFromStream(ims, imageName);
@@ -318,7 +318,6 @@ public class DetailsActivity extends AppCompatActivity {
             manifest.accumulate("format_version",1);
             JSONObject header=new JSONObject();
             header.accumulate("name",mainName);
-
             header.accumulate("uuid", UUID.randomUUID().toString());
             JSONArray version=new JSONArray();
             version.put(1);

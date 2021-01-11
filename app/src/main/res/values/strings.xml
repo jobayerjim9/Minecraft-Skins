@@ -18,10 +18,10 @@
     <string name="exporting">Exporting....!</string>
     <string name="export">Export</string>
     <string name="export_to_gallery">Export to gallery</string>
-    <string name="main">Main</string>
-    <string name="favourite">Favourite</string>
     <string name="nothing_added_to_favourite">Nothing Added To Favourite</string>
     <string name="folder_failed">Could\'t Create Folder!</string>
     <string name="not_found_minecraft">Mincraft didnot found, Saved to storage!</string>
     <string name="minecraftImport">Importing To Mincraft...!</string>
+    <string name="main_tab">Main</string>
+    <string name="favourite_tab">Favourite</string>
 </resources>

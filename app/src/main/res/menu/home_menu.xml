@@ -3,10 +3,10 @@
         android:id="@+id/main"
         android:enabled="true"
         android:icon="@drawable/ic_tab_active"
-        android:title="@string/main"/>
+        android:title="@string/main_tab" />
     <item
         android:id="@+id/favourite"
         android:enabled="true"
         android:icon="@drawable/ic_tab_inactive"
-        android:title="@string/favourite"/>
+        android:title="@string/favourite_tab" />
 </menu>

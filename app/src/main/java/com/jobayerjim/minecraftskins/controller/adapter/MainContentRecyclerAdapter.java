@@ -52,10 +52,10 @@ public class MainContentRecyclerAdapter extends RecyclerView.Adapter<MainContent
             holder.item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(context, DetailsActivity.class);
-                    intent.putExtra("image",fileName);
-                    intent.putExtra("name",skinsModels.get(position).getImage_name());
-                    intent.putExtra("res",skinsModels.get(position).getRes_name());
+                    Intent intent = new Intent(context, DetailsActivity.class);
+                    intent.putExtra(Constants.IMAGE_FIELD, fileName);
+                    intent.putExtra(Constants.NAME_FIELD, skinsModels.get(position).getImage_name());
+                    intent.putExtra(Constants.RES_FIELD, skinsModels.get(position).getRes_name());
                     context.startActivity(intent);
                 }
             });
