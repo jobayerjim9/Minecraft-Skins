@@ -12,14 +12,16 @@
         android:layout_height="match_parent"
         tools:context=".ui.activity.MainActivity">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewPager"
+        <FrameLayout
+            android:id="@+id/container"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/homeTabLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+        </FrameLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/homeTabLayout"
@@ -39,6 +41,7 @@
             app:tabTextColor="#FFFFFF">
 
             <com.google.android.material.tabs.TabItem
+                android:id="@+id/skinsTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/tab_background_active"
@@ -46,6 +49,7 @@
                 android:text="@string/main_tab" />
 
             <com.google.android.material.tabs.TabItem
+                android:id="@+id/favoriteTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="auto"

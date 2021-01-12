@@ -1,5 +1,7 @@
 package com.jobayerjim.minecraftskins.models;
 
+import androidx.viewpager.widget.ViewPager;
+
 import com.jobayerjim.minecraftskins.controller.listener.RefreshListener;
 
 public class Constants {
@@ -15,5 +17,6 @@ public class Constants {
     public static String SKIN_FILE = "skins.json";
     public static RefreshListener mainListener;
     public static RefreshListener favouriteListener;
+    public static ViewPager mainViewPager;
 
 }

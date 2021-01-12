@@ -22,6 +22,6 @@
     <string name="folder_failed">Could\'t Create Folder!</string>
     <string name="not_found_minecraft">Mincraft didnot found, Saved to storage!</string>
     <string name="minecraftImport">Importing To Mincraft...!</string>
-    <string name="main_tab">Main</string>
-    <string name="favourite_tab">Favourite</string>
+    <string name="main_tab">Skins</string>
+    <string name="favourite_tab">Favorite</string>
 </resources>

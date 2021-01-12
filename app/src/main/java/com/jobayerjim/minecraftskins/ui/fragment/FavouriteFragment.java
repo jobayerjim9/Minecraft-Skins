@@ -3,6 +3,7 @@ package com.jobayerjim.minecraftskins.ui.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,12 +24,16 @@ import java.util.ArrayList;
 
 
 public class FavouriteFragment extends Fragment implements RefreshListener {
-    private ArrayList<SkinsModel> skinsModels=new ArrayList<>();
+    private ArrayList<SkinsModel> skinsModels = new ArrayList<>();
     MainContentRecyclerAdapter mainContentRecyclerAdapter;
     SwipeRefreshLayout favouriteSwipe;
     TextView noItemText;
-    public FavouriteFragment() {
-        Constants.favouriteListener=this;
+    private FragmentManager fragmentManager;
+
+    public FavouriteFragment(FragmentManager fragmentManager) {
+        Constants.favouriteListener = this;
+        this.fragmentManager = fragmentManager;
+
         // Required empty public constructor
     }
 
@@ -43,7 +48,7 @@ public class FavouriteFragment extends Fragment implements RefreshListener {
     }
 
     private void initView(View v) {
-        mainContentRecyclerAdapter=new MainContentRecyclerAdapter(requireContext(),skinsModels);
+        mainContentRecyclerAdapter = new MainContentRecyclerAdapter(requireContext(), skinsModels, fragmentManager);
         RecyclerView recyclerView=v.findViewById(R.id.favouriteRecycler);
         favouriteSwipe=v.findViewById(R.id.favouriteSwipe);
         noItemText=v.findViewById(R.id.noItemText);

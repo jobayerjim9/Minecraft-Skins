@@ -18,21 +18,22 @@ import com.jobayerjim.minecraftskins.ui.fragment.MainFragment;
 
 public class HomeViewPagerAdapter extends FragmentPagerAdapter {
     private Context context;
-
+    FragmentManager fm;
     public HomeViewPagerAdapter(@NonNull FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
+        this.fm = fm;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            return new MainFragment();
+            return new MainFragment(fm);
+        } else if (position == 1) {
+            return new FavouriteFragment(fm);
         }
-        else {
-            return new FavouriteFragment();
-        }
+        return null;
     }
 
     @Override

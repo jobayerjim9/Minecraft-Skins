@@ -3,6 +3,7 @@
     package="com.jobayerjim.minecraftskins">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <application
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true"
@@ -11,9 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MinecraftSkins">
-        <activity android:name=".ui.activity.DetailsActivity"
-            android:theme="@style/Theme.MinecraftSkins.NoActionBar"
-            ></activity>
         <activity
             android:name=".ui.activity.MainActivity"
             android:theme="@style/Theme.MinecraftSkins.NoActionBar">

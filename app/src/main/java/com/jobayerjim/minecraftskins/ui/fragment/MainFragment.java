@@ -3,6 +3,7 @@ package com.jobayerjim.minecraftskins.ui.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,16 +24,19 @@ import java.util.ArrayList;
 
 
 public class MainFragment extends Fragment implements RefreshListener {
-    private ArrayList<SkinsModel> skinsModels=new ArrayList<>();
+    private ArrayList<SkinsModel> skinsModels = new ArrayList<>();
     MainContentRecyclerAdapter mainContentRecyclerAdapter;
     RefreshListener refreshListener;
-    public MainFragment() {
+    private FragmentManager fragmentManager;
+
+    public MainFragment(FragmentManager fragmentManager) {
         // Required empty public constructor
-        Constants.mainListener=this;
+        Constants.mainListener = this;
+        this.fragmentManager = fragmentManager;
     }
 
     public void getDataFromDb() {
-        DatabaseAccess databaseAccess=DatabaseAccess.getInstance(requireContext());
+        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(requireContext());
         databaseAccess.open();
         skinsModels.clear();
         skinsModels.addAll(databaseAccess.getAllData());
@@ -58,7 +62,7 @@ public class MainFragment extends Fragment implements RefreshListener {
     }
     SwipeRefreshLayout mainSwipe;
     private void initView(View v) {
-        mainContentRecyclerAdapter=new MainContentRecyclerAdapter(requireContext(),skinsModels);
+        mainContentRecyclerAdapter = new MainContentRecyclerAdapter(requireContext(), skinsModels, fragmentManager);
         RecyclerView recyclerView=v.findViewById(R.id.mainRecycler);
         mainSwipe=v.findViewById(R.id.mainSwipe);
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(),3));

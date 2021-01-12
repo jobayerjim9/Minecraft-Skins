@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/splash_bg_gradient"
-        tools:context=".ui.activity.DetailsActivity">
+        tools:context=".ui.fragment.DetailsFragment">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/exportButton"

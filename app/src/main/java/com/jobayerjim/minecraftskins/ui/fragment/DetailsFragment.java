@@ -1,17 +1,20 @@
-package com.jobayerjim.minecraftskins.ui.activity;
+package com.jobayerjim.minecraftskins.ui.fragment;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -20,15 +23,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.JsonWriter;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.jobayerjim.minecraftskins.R;
-import com.jobayerjim.minecraftskins.databinding.ActivityDetailsBinding;
+
+import com.jobayerjim.minecraftskins.databinding.FragmentDetailsBinding;
 import com.jobayerjim.minecraftskins.models.Constants;
-import com.mifmif.common.regex.Generex;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +53,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -59,62 +62,68 @@ import kotlin.io.FilesKt;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
-public class DetailsActivity extends AppCompatActivity {
-    ActivityDetailsBinding binding;
+public class DetailsFragment extends Fragment {
+    FragmentDetailsBinding binding;
     String image;
-    String fileName,resName,resFileName;
-    String mainName,resMainName;
+    String fileName, resName, resFileName;
+    String mainName, resMainName;
     Drawable imageDrawable;
     String imageName;
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_details);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_details, container, false);
         init();
+
+        return binding.getRoot();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mainFolder!=null) {
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mainFolder != null) {
             if (mainFolder.exists()) {
                 FilesKt.deleteRecursively(mainFolder);
             }
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+    private FragmentManager fragmentManager;
+
+    public DetailsFragment(String fileName, String resName, String imageName, FragmentManager fragmentManager) {
+        this.fileName = fileName;
+        this.resName = resName;
+        this.imageName = imageName;
+        this.fragmentManager = fragmentManager;
     }
+
     File rootFolder;
-    InputStream ims=null;
+    InputStream ims = null;
+
     private void init() {
-        rootFolder=new File(Environment.getExternalStorageDirectory(),Constants.MAIN_FOLDER);
+        rootFolder = new File(Environment.getExternalStorageDirectory(), Constants.MAIN_FOLDER);
         try {
             // get input stream
-            fileName = getIntent().getStringExtra(Constants.IMAGE_FIELD);
-            imageName = getIntent().getStringExtra(Constants.NAME_FIELD);
-            resName = getIntent().getStringExtra(Constants.RES_FIELD);
             mainName = imageName.replace(".png", "");
             resMainName = resName.replace(".png", "");
             resFileName = "res_skins/" + resName;
             Log.d("resPath", resFileName + " " + fileName);
-            ims = getAssets().open(fileName);
+            ims = requireContext().getAssets().open(fileName);
             // load image as Drawable
             imageDrawable = Drawable.createFromStream(ims, imageName);
             // set image to ImageView
             binding.contentImageDetails.setImageDrawable(imageDrawable);
 
-        }
-        catch(IOException ex) {
+        } catch(IOException ex) {
             ex.printStackTrace();
         }
         binding.backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                fragmentManager.popBackStack();
             }
         });
         binding.exportToGallaryButton.setOnClickListener(new View.OnClickListener() {
@@ -135,9 +144,38 @@ public class DetailsActivity extends AppCompatActivity {
         });
 
     }
+
+    private void killAppBypackage(String packageTokill) {
+
+        List<ApplicationInfo> packages;
+        PackageManager pm;
+        pm = requireContext().getPackageManager();
+        //get a list of installed apps.
+        packages = pm.getInstalledApplications(0);
+
+
+        ActivityManager mActivityManager = (ActivityManager) requireContext().getSystemService(Context.ACTIVITY_SERVICE);
+        String myPackage = requireContext().getApplicationContext().getPackageName();
+
+        for (ApplicationInfo packageInfo : packages) {
+
+            if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1) {
+                continue;
+            }
+            if (packageInfo.packageName.equals(myPackage)) {
+                continue;
+            }
+            if (packageInfo.packageName.equals(packageTokill)) {
+                mActivityManager.killBackgroundProcesses(packageInfo.packageName);
+            }
+
+        }
+
+    }
+
     private void createAllRequiredFile(File mainFolder) {
-        JSONObject manifest=getManifestJson();
-        if (manifest!=null) {
+        JSONObject manifest = getManifestJson();
+        if (manifest != null) {
             try {
                 Writer output = null;
                 File manifestFile = new File(mainFolder.getAbsolutePath(), Constants.MANIFEST);
@@ -195,14 +233,14 @@ public class DetailsActivity extends AppCompatActivity {
                     Log.d("fileNotExist", "fileNotExist");
                     createAllRequiredFile(mainFolder);
                 } else {
-                    Toast.makeText(this, getString(R.string.folder_failed), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.folder_failed), Toast.LENGTH_SHORT).show();
                 }
                 Log.d("filePath", mainFolder.getAbsolutePath());
             }
 
         }
         else {
-            Toast.makeText(this, getString(R.string.folder_failed), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.folder_failed), Toast.LENGTH_SHORT).show();
         }
 
 
@@ -247,28 +285,29 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void openMcpackFile(File mcpackFile) {
-        Uri minecraftData = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider",mcpackFile);
+
+        Uri minecraftData = FileProvider.getUriForFile(requireContext(), requireContext().getApplicationContext().getPackageName() + ".provider", mcpackFile);
         // Uri minecraftData=Uri.parse("file:///storage/emulated/0/fromgate.mcpack");
-        Intent intent=new Intent(Intent.ACTION_VIEW,minecraftData);
+        Intent intent = new Intent(Intent.ACTION_VIEW, minecraftData);
         intent.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-        PackageManager packageManager = getPackageManager();
+        PackageManager packageManager = requireContext().getPackageManager();
         List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 2);
         boolean isIntentSafe = activities.size() > 0;
 // Start an activity if it's safe
         if (isIntentSafe) {
-            List<ResolveInfo> resInfoList = this.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-
+            killAppBypackage("com.mojang.minecraftpe");
+            List<ResolveInfo> resInfoList = requireContext().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
             for (ResolveInfo resolveInfo : resInfoList) {
                 String packageName = resolveInfo.activityInfo.packageName;
-                this.grantUriPermission(packageName, minecraftData, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                requireContext().grantUriPermission(packageName, minecraftData, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
-            Toast.makeText(this, getString(R.string.minecraftImport), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.minecraftImport), Toast.LENGTH_SHORT).show();
             startActivity(intent);
-            finish();
+            fragmentManager.popBackStack();
         }
         else {
-            Toast.makeText(this, getString(R.string.not_found_minecraft), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.not_found_minecraft), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -276,7 +315,7 @@ public class DetailsActivity extends AppCompatActivity {
         InputStream is;
         OutputStream out = null;
         try {
-            is=getAssets().open(resFileName);
+            is = requireContext().getAssets().open(resFileName);
             File outFile = new File(mainFolder.getAbsolutePath(), name);
             out = new FileOutputStream(outFile);
             //copyFile(ims, out);
@@ -292,7 +331,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void createPackIcon(File mainFolder) {
         try {
-            InputStream is=getAssets().open(fileName);
+            InputStream is = requireContext().getAssets().open(fileName);
             Bitmap logo = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(is), 128, 128, true);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             logo.compress(Bitmap.CompressFormat.PNG, 100 /*ignored for PNG*/, bos);
@@ -344,19 +383,19 @@ public class DetailsActivity extends AppCompatActivity {
     private JSONObject getSkinJson(String name,String fileName) {
         JSONObject jsonObject=new JSONObject();
         try {
-            jsonObject.accumulate("geometry","skinpacks/skins.json");
-            jsonObject.accumulate("localization_name",name);
-            jsonObject.accumulate("serialize_name",name);
-            JSONArray skins=new JSONArray();
-            JSONObject object1=new JSONObject();
-            object1.accumulate("geometry","geometry.humanoid.custom");
-            object1.accumulate("localization_name","current");
-            object1.accumulate("texture",fileName);
-            object1.accumulate("type","free");
+            jsonObject.accumulate("geometry", "skinpacks/skins.json");
+            jsonObject.accumulate("localization_name", mainName);
+            jsonObject.accumulate("serialize_name", mainName);
+            JSONArray skins = new JSONArray();
+            JSONObject object1 = new JSONObject();
+            object1.accumulate("geometry", "geometry.humanoid.custom");
+            object1.accumulate("localization_name", "current");
+            object1.accumulate("texture", fileName);
+            object1.accumulate("type", "free");
             skins.put(object1);
-            JSONObject object2=new JSONObject();
-            object2.accumulate("geometry","geometry.humanoid.custom");
-            object2.accumulate("localization_name","old");
+            JSONObject object2 = new JSONObject();
+            object2.accumulate("geometry", "geometry.humanoid.custom");
+            object2.accumulate("localization_name", "old");
             String oldName=name+"_old.png";
             object2.accumulate("texture",oldName);
             object2.accumulate("type","free");
@@ -372,14 +411,14 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
     private void copyAssets(String fName) {
-        final ProgressDialog progressDialog=new ProgressDialog(DetailsActivity.this);
+        final ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.exporting));
         progressDialog.show();
             InputStream is;
             OutputStream out = null;
             try {
-                is=getAssets().open(fName);
+                is = requireContext().getAssets().open(fName);
                 File outFile = new File(Environment.getExternalStorageDirectory()+"/Download/", imageName);
                 out = new FileOutputStream(outFile);
                 //copyFile(ims, out);
@@ -388,16 +427,16 @@ public class DetailsActivity extends AppCompatActivity {
                 out.write(data);
                 is.close();
                 out.close();
-                MediaScannerConnection.scanFile(this,
-                        new String[] { outFile.toString() }, null,
+                MediaScannerConnection.scanFile(requireContext(),
+                        new String[]{outFile.toString()}, null,
                         new MediaScannerConnection.OnScanCompletedListener() {
                             public void onScanCompleted(String path, Uri uri) {
                                 Log.i("ExternalStorage", "Scanned " + path + ":");
                                 Log.i("ExternalStorage", "-> uri=" + uri);
                             }
                         });
-                Toast.makeText(this, getResources().getString(R.string.export_success), Toast.LENGTH_SHORT).show();
-                Log.d("fileName",fName+" "+imageName+" "+outFile.getAbsolutePath());
+                Toast.makeText(requireContext(), getResources().getString(R.string.export_success), Toast.LENGTH_SHORT).show();
+                Log.d("fileName", fName + " " + imageName + " " + outFile.getAbsolutePath());
                 progressDialog.dismiss();
             } catch(IOException e) {
                 Log.e("tag", "Failed to copy asset file: " + fName, e);
@@ -408,15 +447,15 @@ public class DetailsActivity extends AppCompatActivity {
     final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public  boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(DetailsActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(DetailsActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v("DetailsActivity","Permission is granted");
+                Log.v("DetailsActivity", "Permission is granted");
                 return true;
             } else {
 
-                Log.v("DetailsActivity","Permission is revoked");
-                ActivityCompat.requestPermissions(DetailsActivity.this, permissions, 1);
+                Log.v("DetailsActivity", "Permission is revoked");
+                ActivityCompat.requestPermissions(requireActivity(), permissions, 1);
                 return false;
             }
         }
