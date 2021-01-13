@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jobayerjim.minecraftskins.R;
 import com.jobayerjim.minecraftskins.controller.helper.dbhelper.DatabaseAccess;
+import com.jobayerjim.minecraftskins.controller.listener.RefreshListener;
 import com.jobayerjim.minecraftskins.models.Constants;
 import com.jobayerjim.minecraftskins.models.SkinsModel;
 import com.jobayerjim.minecraftskins.ui.fragment.DetailsFragment;
@@ -27,17 +28,19 @@ public class MainContentRecyclerAdapter extends RecyclerView.Adapter<MainContent
     private Context context;
     private ArrayList<SkinsModel> skinsModels;
     private FragmentManager fragmentManager;
+    private final RefreshListener refreshListener;
 
-    public MainContentRecyclerAdapter(Context context, ArrayList<SkinsModel> skinsModels, FragmentManager fragmentManager) {
+    public MainContentRecyclerAdapter(Context context, ArrayList<SkinsModel> skinsModels, FragmentManager fragmentManager, RefreshListener refreshListener) {
         this.context = context;
         this.skinsModels = skinsModels;
         this.fragmentManager = fragmentManager;
+        this.refreshListener = refreshListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_content,parent,false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_content, parent, false));
     }
 
     @Override
@@ -79,9 +82,8 @@ public class MainContentRecyclerAdapter extends RecyclerView.Adapter<MainContent
                         }
                     }
                     databaseAccess.close();
-                    Constants.favouriteListener.onRefresh();
-                    Constants.mainListener.onRefresh();
 
+                    refreshListener.onRefresh();
                 }
             });
             if (skinsModels.get(position).getFavourite()==0) {

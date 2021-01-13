@@ -31,7 +31,6 @@ public class MainFragment extends Fragment implements RefreshListener {
 
     public MainFragment(FragmentManager fragmentManager) {
         // Required empty public constructor
-        Constants.mainListener = this;
         this.fragmentManager = fragmentManager;
     }
 
@@ -62,7 +61,7 @@ public class MainFragment extends Fragment implements RefreshListener {
     }
     SwipeRefreshLayout mainSwipe;
     private void initView(View v) {
-        mainContentRecyclerAdapter = new MainContentRecyclerAdapter(requireContext(), skinsModels, fragmentManager);
+        mainContentRecyclerAdapter = new MainContentRecyclerAdapter(requireContext(), skinsModels, fragmentManager, this);
         RecyclerView recyclerView=v.findViewById(R.id.mainRecycler);
         mainSwipe=v.findViewById(R.id.mainSwipe);
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(),3));

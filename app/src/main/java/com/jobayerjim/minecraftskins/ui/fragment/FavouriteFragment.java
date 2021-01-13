@@ -31,7 +31,6 @@ public class FavouriteFragment extends Fragment implements RefreshListener {
     private FragmentManager fragmentManager;
 
     public FavouriteFragment(FragmentManager fragmentManager) {
-        Constants.favouriteListener = this;
         this.fragmentManager = fragmentManager;
 
         // Required empty public constructor
@@ -48,7 +47,7 @@ public class FavouriteFragment extends Fragment implements RefreshListener {
     }
 
     private void initView(View v) {
-        mainContentRecyclerAdapter = new MainContentRecyclerAdapter(requireContext(), skinsModels, fragmentManager);
+        mainContentRecyclerAdapter = new MainContentRecyclerAdapter(requireContext(), skinsModels, fragmentManager, this);
         RecyclerView recyclerView=v.findViewById(R.id.favouriteRecycler);
         favouriteSwipe=v.findViewById(R.id.favouriteSwipe);
         noItemText=v.findViewById(R.id.noItemText);

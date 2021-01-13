@@ -15,8 +15,6 @@ public class Constants {
     public static String FROMGATE = "fromgate.png";
     public static String FROMGATE_OLD = "fromgate_old.png";
     public static String SKIN_FILE = "skins.json";
-    public static RefreshListener mainListener;
-    public static RefreshListener favouriteListener;
     public static ViewPager mainViewPager;
 
 }

@@ -200,8 +200,6 @@ public class DetailsFragment extends Fragment {
         }
         createPackIcon(mainFolder);
         createSkinFiles(mainFolder,resName);
-        String oldName=resMainName+"_old.png";
-        createSkinFiles(mainFolder,oldName);
         ArrayList<String> files=new ArrayList<>();
         for (File file: mainFolder.listFiles()) {
             files.add(file.getAbsolutePath());
@@ -393,13 +391,6 @@ public class DetailsFragment extends Fragment {
             object1.accumulate("texture", fileName);
             object1.accumulate("type", "free");
             skins.put(object1);
-            JSONObject object2 = new JSONObject();
-            object2.accumulate("geometry", "geometry.humanoid.custom");
-            object2.accumulate("localization_name", "old");
-            String oldName=name+"_old.png";
-            object2.accumulate("texture",oldName);
-            object2.accumulate("type","free");
-            skins.put(object2);
             jsonObject.put("skins",skins);
             Log.d("skinString",jsonObject.toString());
             return jsonObject;
